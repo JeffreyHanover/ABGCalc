@@ -1,0 +1,1554 @@
+
+<!DOCTYPE html>
+ 
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABG Calculator</title>
+
+<style>
+
+/* Universal box-sizing rule */
+* {
+  box-sizing: border-box;
+}
+  
+/* Main grid container */
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'disease'
+    'in'
+    'calcButtons'
+    'out';
+  grid-template-columns: 100%;  /* Full-width for each section */
+  grid-template-rows: auto auto auto auto;
+  gap: 30px;                    /* Space between sections */
+  background-color: #ffffff;
+  padding: 20px;
+
+  /* Center the entire grid container */
+  max-width: 100%; /* Optional: Limit container width */
+  margin: 0 auto;   /* Center horizontally */
+}
+
+/* Center content in grid items */
+.grid-container > div {
+  background-color: #ffffff;
+  padding: 0px 0px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .in - Flexbox for stacking elements vertically */
+.in {
+  display: flex;               /* Enable Flexbox */
+  flex-direction: column;      /* Stack button-input pairs vertically */
+  gap: 20px;                   /* Add space between each pair */
+  align-items: center;         /* Center the pairs horizontally */
+  justify-content: center;
+  width: 100%;                 /* Ensure it takes full width */
+}
+
+/* Each button-input pair (textbox + input) */
+.in > div {
+  display: flex;               /* Enable Flexbox for each pair */
+  flex-direction: row;         /* Arrange button and input side by side */
+  align-items: center;         /* Center the button and input vertically */
+  justify-content: center;
+  gap: 1px;                   /* Space between button and input */
+  width: 100%;                 /* Ensure it takes full width */
+  max-width: none;            /* Optional: Limit max-width for readability */
+}
+
+/* Button styling (RR, VT, FIO2, PEEP) */
+button {
+  padding: 10px 20px;            /* Make the button larger and more readable */
+  font-size: 16px;
+  border-radius: 2px;
+  border: 1px solid #ccc;        /* Light border */
+  cursor: pointer;
+  background-color: #ffffff;     /* Button color */
+  color: #ffffff;                /* Button text color */
+  font-family: Arial, sans-serif;
+  width: 20px;                  /* Set a fixed width for the button */
+  text-align: center;
+}
+
+/* Hover effect for the button */
+button:hover {
+  background-color: #ffffff;     /* Button hover effect */
+}
+
+/* Input styling */
+input {
+  width: 100%;                   /* Make the input take up the remaining space */
+  max-width: 100%;              /* Optional: Limit input width */
+  padding: 10px;                 /* Add padding inside the input */
+  font-size: 16px;               /* Input text size */
+  border-radius: 8px;
+  border: 1px solid #ccc;        /* Optional border */
+  background-color: #ffffff;     /* White background for input */
+}
+
+/* Display the value under each input */
+#RR_display, #VT_display, #FI_O2_display, #PEEP_display {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;               /* Space between the input and value display */
+}
+
+/* Range Input styling */
+input[type="range"] {
+  -webkit-appearance: none;    /* Remove default styling */
+  appearance: none;
+  width: 100%;                 /* Ensure the range input fills its container */
+  height: 5px;                /* Height of the range input */
+  background: #ddd;            /* Background color of the range input */
+  border-radius: 5px;          /* Rounded corners for the range input */
+  outline: none;               /* Remove the outline */
+}
+  
+.input2, .input3, .input1, .input4 {
+  width: 75%;  /* Make sure the containers are full width */
+  max-width: none; /* Ensure there's no max-width limiting it */
+}
+
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #1D2951;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]:focus {
+  background: #A2B2FF;         /* Range input focus effect */
+}
+
+/* General input styling */
+input, textarea {
+  border: none;
+  background-color: #ffffff;
+  font-size: 16px;
+  font-family: Arial;
+  color: black;
+  padding: 5px;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Button styling */
+button {
+  background-color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  margin: auto;
+  display: block;
+  text-decoration: bold;
+  font-family: Apercu, helvetica, sans-serif;
+  color: black;
+  padding: 2px;
+  text-align: left;
+}
+
+/* .grid-container for overall layout */
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'disease'
+    'in'
+    'calcButtons'
+    'out';
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto auto auto;
+  gap: 30px;
+  background-color: #ffffff;
+  padding: 20px;
+
+  /* Center the entire grid container */
+  max-width: 800px; /* Optional: Limit container width */
+  margin: 0 auto; /* Center horizontally */
+}
+
+/* Center content in grid items */
+.grid-container > div {
+  background-color: #ffffff;
+  padding: 0px 0px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .calcButtons */
+.calcButtons {
+  grid-area: calcButtons;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 5px;
+  padding: 5px;
+  justify-items: center;
+  align-items: center;
+}
+
+/* .out (output section) */
+.out {
+  grid-area: out;
+  display: grid;
+  max-width: 100%;
+    height: 5px;
+  justify-content: center;
+  align-items: center;
+    justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  grid-template-columns: 23% 24% 23% 24%;
+  grid-template-areas:
+    'textbox5 output1 textbox6 output2 textbox7 output3 textbox8 output4';
+  grid-gap: 1px;
+  padding: 1px 0px;
+}
+
+/* .disease (for disease selection section) */
+.disease {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1000px) {
+  .grid-container {
+    max-width: 100%; /* Full width for small screens */
+    margin: 0 auto; /* Center horizontally */
+    grid-template-areas:
+      'disease'
+      'in'
+      'calcButtons'
+      'out';
+    grid-template-rows: auto auto auto auto;
+  }
+
+  
+  
+  .calcButtons {
+    grid-template-columns: auto;
+    padding: 5px;
+  }
+
+  .out {
+    grid-template-columns: 23% 24% 23% 24%;
+    padding: 10px 0px;
+      justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  }
+}
+  
+textarea {
+  border: none;
+  outline: none;
+  background-color: #ffffff;
+  font-size: 16px;
+font-family: Apercu, helvetica, sans-serif;
+color: black;
+  resize: none;
+padding: 2px;
+}
+
+/* Custom Select Styling */
+.custom-select {
+  position: relative;
+  font-family: Arial;
+  font-size: 16px;
+}
+
+.custom-select select {
+  background-color: #C2D0FF;
+  color: #1D2951;
+}
+
+.select-selected {
+  background-color: #C2D0FF;
+  color: #1D2951;
+}
+
+.dropdown2 select {
+  background-color: #ffffff;
+  color: black;
+}
+
+/* Styling for floating elements (remove float where unnecessary) */
+.item01 {
+  display: grid;
+  grid-template-areas: 'logo text1';
+  grid-template-columns: 150px auto;
+  background-color: #ffffff;
+  width: 100%;
+  padding: 0;
+  grid-gap: 5px;
+  justify-items: center;
+  align-items: center;
+}
+
+.text1 {
+  border-left: 1px solid white;
+  padding: 0px 5px;
+}
+
+/* Item Containers */
+.item02, .item0 {
+  background-color: #ffffff;
+  width: 100%;
+  padding: 10px 0px;
+  grid-gap: 5px;
+  justify-items: center;
+  align-items: center;
+}
+
+  
+.centered-div {
+  display: flex;            /* Enable Flexbox */
+  justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  height: 100vh;            /* Optional: Use full viewport height */
+}
+
+#phTextarea {
+  color: black;
+  border: 1px solid #ccc;
+    font-family: Arial;
+  font-weight: bold;
+    justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-size: 16px;
+}
+  
+</style>
+
+
+<script>
+
+//These functions correspond to the calculatePreliminary() function from LungCalc.class.txt 
+ 
+function calcPB(){
+  PB = 759.78;
+} 
+ 
+function calcQdotC(){
+  var QdotT = 5.5;
+  var QdotS_QdotT = +document.getElementById("shunt_f").value;
+  QdotC = QdotT * (1.0 - QdotS_QdotT);
+} 
+ 
+function calcPIO2(){
+  var FIO2 = +document.getElementById("FI_O2").value;
+  calcPB();
+  PIO2 = FIO2 * (PB-47.0);
+}
+
+function calcVdotE(){
+  var VT = +document.getElementById("VTidal").value;
+  var f = +document.getElementById("RR").value;
+  VdotE = 0.001*VT*f;
+}
+ 
+function calcVdotA(){
+  var VT = +document.getElementById("VTidal").value;
+  var f = +document.getElementById("RR").value;
+  calcShuntPrelim();
+  VdotA = 0.001*(VT-VD)*f;
+} 
+ 
+function calcVdotCO2(){
+  var VdotO2 = 300;
+  var R = 0.8;
+  VdotCO2 = VdotO2*R;
+}
+  
+function calcPACO2(){
+  calcVdotCO2();
+  calcVdotA();
+  PACO2 = 0.875*(VdotCO2/VdotA);
+}
+  
+function calcPAO2(){
+  var FIO2 = +document.getElementById("FI_O2").value;
+  var R = 0.8;
+  calcPIO2();
+  calcPACO2();
+  PAO2 = PIO2 - (PACO2*(FIO2 + (1-FIO2)/R));
+}
+
+function calcShuntPrelim(){
+
+QdotT = 5.5;
+
+var disease = document.getElementById("disease_selection").value;
+var PEEP = parseFloat(document.getElementById("PEEP_value").value);
+
+if (disease == "ards") {
+    // Safeguard for parsing PEEP
+    if (isNaN(PEEP)) {
+        alert("PEEP value is invalid. Please enter a valid number.");
+        return;
+    }
+
+    // Sigmoidal equation for QdotS/QdotT
+    QdotS_QdotT = 0.4 - (0.32 / (1 + Math.exp(-1.5 * (PEEP - 10)))); // Adjusted for smooth transition
+
+    // Sigmoidal equation for VD remains unchanged
+    VD = 150 + (100 / (1 + Math.exp(-1.5 * (PEEP - 15)))); // Adjusted for smooth transition
+
+    // Debugging logs
+    console.log("PEEP:", PEEP);
+    console.log("QdotS/QdotT:", QdotS_QdotT);
+    console.log("VD:", VD);
+
+    // Ensure values are within valid ranges
+    if (VD <= 0 || QdotS_QdotT < 0 || QdotS_QdotT > 1) {
+        alert("Calculated VD or QdotS/QdotT is out of range. Check equations.");
+        return;
+    }
+
+    // ARDS does not use MISMATCH logic
+    MISMATCH = 0;
+}
+
+if (disease == "normal") {
+    // Safeguard for parsing PEEP
+    if (isNaN(PEEP)) {
+        alert("PEEP value is invalid. Please enter a valid number.");
+        return;
+    }
+
+    // Adjusted sigmoidal equation for VD (normal state)
+    VD = 150 + (70 / (1 + Math.exp(-1.5 * (PEEP - 12))));
+
+    // Constant QdotS/QdotT for normal state
+    QdotS_QdotT = 0.02;
+
+    // Debugging logs
+    console.log("PEEP:", PEEP);
+    console.log("VD:", VD);
+    console.log("QdotS/QdotT:", QdotS_QdotT);
+
+    // Ensure values are within valid ranges
+    if (VD <= 0 || QdotS_QdotT < 0 || QdotS_QdotT > 1) {
+        alert("Calculated VD or QdotS/QdotT is out of range. Check equations.");
+        return;
+    }
+
+    // Normal state does not use MISMATCH logic
+    MISMATCH = 0;
+}
+
+var disease = document.getElementById("disease_selection").value;
+var PEEP = parseFloat(document.getElementById("PEEP_value").value);
+
+if (disease == "asthma") {
+    // Safeguard for parsing PEEP
+    if (isNaN(PEEP)) {
+        alert("PEEP value is invalid. Please enter a valid number.");
+        return;
+    }
+
+    // Sigmoidal equation for VD in asthma
+    VD = 250 + (100 / (1 + Math.exp(-1.5 * (PEEP - 12)))); // Adjusted to target 350 mL at PEEP = 20
+
+    // Fixed value for QdotS/QdotT
+    QdotS_QdotT = 0.02;
+
+    // Debugging logs
+    console.log("PEEP:", PEEP);
+    console.log("VD:", VD);
+    console.log("QdotS/QdotT:", QdotS_QdotT);
+
+    // Ensure values are within valid ranges
+    if (VD <= 0 || QdotS_QdotT < 0 || QdotS_QdotT > 1) {
+        alert("Calculated VD or QdotS/QdotT is out of range. Check equations.");
+        return;
+    }
+
+    // Asthma uses MISMATCH logic
+    MISMATCH = 1;
+}
+
+
+QdotC = QdotT * (1.0 - QdotS_QdotT);
+
+}
+ 
+function calculatePreliminary(){
+  calcShuntPrelim();
+  calcPB();
+  calcPIO2();
+  calcVdotE();
+  calcVdotA();
+  calcVdotCO2();
+  calcPACO2();
+  calcPAO2();
+VT = +document.getElementById("VTidal").value;
+f = +document.getElementById("RR").value;
+FIO2 = +document.getElementById("FI_O2").value;
+VdotO2 = 300;
+R = 0.8;
+Hb = 15;
+QdotT = 5.5;
+DLO2 = 32;
+ALERT = 0;
+}
+
+//Parameter information to be displayed upon clicking and to raise errors if inputs fall outside range
+
+//Inputs
+
+let VT_info = {
+  fullName: "Tidal Volume",
+  def: "Volume of air that moves into/out of the lungs with each normal breath",
+  param: "VT",
+  lower_bound: 200.0,
+  upper_bound: 4500.0,
+  units: "mL",
+  normal: 500.0
+};
+
+let VD_info = {
+  fullName: "Dead Space Volume",
+  def: "Volume of ventilated air that does not participate in gas exchange",
+  param: "VD",
+  lower_bound: 100.0,
+  upper_bound: 450.0,
+  units: "mL",
+  normal: 150.0
+};
+
+let f_info = {
+  fullName: "Respiratory Rate",
+  def: "Number of breaths per minute",
+  param: "f",
+  lower_bound: 5.0,
+  upper_bound: 40.0,
+  units: "breaths/min",
+  normal: 15.0
+};
+
+let FIO2_info = {
+  fullName: "Inspired O2",
+  def: "Proportion of oxygen in the inspired air (as a decimal)",
+  param: "FIO2",
+  lower_bound: 0.12,
+  upper_bound: 1.0,
+  units: "(decimal)",
+  normal: 0.21
+};
+
+let QdotS_QdotT_info = {
+  fullName: "Shunt fraction (as decimal)",
+  def: "Fraction of blood flow that does not participate in gas exchange",
+  param: "QdotS_QdotT",
+  lower_bound: 0.0,
+  upper_bound: 0.4,
+  units: "(decimal)",
+  normal: 0.02
+};
+
+let PACO2_info = {
+  fullName: "Alveolar PCO2",
+  def: "Partial pressure of CO2 in the alveoli", 
+  param: "PACO2",
+  lower_bound: 18.0,
+  upper_bound: 90.0,
+  units: "mmHg",
+  normal: 40.0
+};
+
+let PIO2_info = {
+  fullName: "Inspired PO2",
+  def: "Partial pressure of O2 in inspired air", 
+  param: "PIO2",
+  lower_bound: 60.0,
+  upper_bound: 760.0,
+  units: "mmHg",
+  normal: 150.0
+};
+
+let PAO2_info = {
+  fullName: "Alveolar PO2",
+  def: "Partial pressure of O2 in the alveoli", 
+  param: "PAO2",
+  lower_bound: 30.0,
+  upper_bound: 700.0,
+  units: "",
+  normal: 102.0
+};
+
+//Arterial
+let PartCO2_info = {
+  fullName: "Arterial PCO2",
+  def: "Partial pressure of CO2 in the arterial blood", 
+  param: "PartCO2",
+  lower_bound: 25.0,
+  upper_bound: 60.0,
+  units: "",
+  normal: 40.0
+};
+
+let PartO2_info = {
+  fullName: "Arterial PO2",
+  def: "Partial pressure of O2 in the arterial blood", 
+  param: "PartO2",
+  lower_bound: 30.0,
+  upper_bound: 700.0,
+  units: "",
+  normal: 102.0
+};
+
+let SartO2_info = {
+  fullName: "Arterial O2 Saturation",
+  def: "O2 Saturation in the arterial blood",
+  param: "SartO2",
+  lower_bound: 50.0,
+  upper_bound: 100.0,
+  units: "%",
+  normal: 98.0
+};
+
+let pHart_info = {
+  fullName: "Arterial pH",
+  def: "pH of the arterial blood",
+  param: "pHart",
+  lower_bound: 7.2,
+  upper_bound: 7.6,
+  units: "",
+  normal: 7.4
+};
+
+let A_aO2Diff_info = {
+  fullName: "A-a O2 Difference",
+  def: "Difference between the alveolar PO2 and arterial PO2",
+  param: "A_aO2Diff",
+  lower_bound: 0.0,
+  upper_bound: 10000.0,
+  units: "mmHg",
+  normal: 0.0
+};
+
+let Phys_VD_VT_info = {
+  fullName: "Physiological Dead Space",
+  def: "Proportion of total inspired air that is not perfused",
+  param: "Phys_VD_VT",
+  lower_bound: 0.0,
+  upper_bound: 1.0,
+  units: "(decimal)",
+  normal: 0.3
+};
+
+let Phys_QS_QT_info = {
+  fullName: "Physiological Shunt",
+  def: "Proportion of total blood flow that is not ventilated",
+  param: "Phys_QS_QT",
+  lower_bound: 0.0,
+  upper_bound: 1.0,
+  units: "(decimal)",
+  normal: 0.02
+};
+
+
+function showInfo(varObj){
+	alert("Variable name: " + varObj.fullName+" ("+ varObj.param+") "+ "\nDefinition: "+ varObj.def + "\nUnits: " + varObj.units + "\nClinical Range = "+ varObj.lower_bound+" - "+ varObj.upper_bound + " " + varObj.units + "\nNormal: " + varObj.normal + " " + varObj.units);
+}
+
+
+function setEstimates(PCO2, R) {
+        PCO2est = PCO2;
+        Rest = R;
+    }
+
+function calculateDiffusion() {
+        calculatePreliminary();
+        calculateDiffusionNumerics();
+        calculateFinal(0);
+    }
+    
+    function calculateVQ() {
+        calculatePreliminary();
+        calculateVQPreliminary();
+        calculateVQNumerics();
+        calculateFinal(1);
+        calculateVQFinal();
+    }
+    
+    function initVQ() {
+        calculatePreliminary();
+        calculateVQPreliminary();
+    }
+
+function reset(){
+	RESET = 1;
+    // Resetting all the input values to their defaults
+    document.getElementById("RR").value = 15;
+    document.getElementById("VTidal").value = 500;
+    document.getElementById("FI_O2").value = 0.21;
+    document.getElementById("PEEP_value").value = 0;
+    document.getElementById("disease_selection").value = "normal"; // Reset disease selection
+
+    // Resetting all the output fields to blank
+    document.getElementById("pHart").value = '';
+    document.getElementById("PartCO2").value = '';
+    document.getElementById("PartO2").value = '';
+    document.getElementById("SartO2").value = '';
+
+    // Reset any displayed values for input sliders
+    document.getElementById("RR_display").textContent = 15;
+    document.getElementById("VT_display").textContent = 500;
+    document.getElementById("FI_O2_display").textContent = 0.21;
+    document.getElementById("PEEP_display").textContent = 0;
+
+    // Reset all calculated variables to their initial states (example)
+    MISMATCH = 0;
+    VdotE = 0.0;
+    VdotA = 0.0;
+    PIO2 = 0.0;
+    PACO2 = 0.0;
+    PAO2 = 0.0;
+    Phys_VD_VT = 0.00;
+    Phys_QS_QT = 0.00;
+    PB = 759.78; // Reset barometric pressure to default
+    VdotO2 = 300;
+    R = 0.8;
+    Hb = 15;
+    QdotT = 5.5;
+    DLO2 = 32;
+
+    // Reset disease parameters based on "normal"
+    calcShuntPrelim(); // Recalculate shunt and other parameters based on reset values
+
+    // Clear the results shown in the output areas
+    displayOutputs(); // Call function to update the output fields with cleared values
+
+    // Optionally, reset any flags or alerts if applicable
+    ALERT = 0;
+    ERROR = 0;
+}
+
+function showOutputs(){
+initVQ();
+ERROR = 0;
+RESET = 0;
+
+if (MISMATCH == 0){
+	calculateDiffusion();
+	displayOutputs();
+	}
+if (MISMATCH == 1){
+	calculateVQ();
+	displayVQOutputs();
+	}
+
+if (ALERT == 1){
+	alert("Input values are outside the acceptable range! Click on the highlighted input variable to see the accepted range.")
+	}
+}
+
+function displayOutputs() {
+    const Art_array = [PartO2_info, SartO2_info, PartCO2_info, pHart_info];
+    const art_params = [
+        PartO2.toFixed(1),
+        SartO2.toFixed(1),
+        PartCO2.toFixed(1),
+        pHart.toFixed(2)
+    ];
+
+    for (let i = 0; i < Art_array.length; i++) {
+        const myID = Art_array[i].param;
+        const paramValue = parseFloat(art_params[i]);
+
+        // Initialize default styles
+        let backgroundColor = "white";
+        let textColor = "black";
+        let displayText = `${paramValue} ${Art_array[i].units}`;
+
+        // Determine background color and text based on value ranges
+        if (isNaN(paramValue)) {
+            backgroundColor = "red"; // Invalid number
+            textColor = "white";
+            displayText = "Invalid Value";
+        } else {
+            switch (Art_array[i].param) {
+                case "pHart": // pH
+                    if (paramValue < 7.2) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 7.2 && paramValue < 7.35) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 7.35 && paramValue <= 7.45) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 7.45 && paramValue <= 7.6) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
+
+                case "PartCO2": // pCO2
+                    if (paramValue < 25.0) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 25.0 && paramValue < 35.0) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 35.0 && paramValue <= 45.0) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 45.0 && paramValue <= 55.0) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
+
+                case "PartO2": // pO2
+                    if (paramValue < 50.0) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 50.0 && paramValue < 74.0) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 74.0 && paramValue <= 104.0) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 104.0 && paramValue <= 250.0) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
+
+                default:
+                    // Default case if no specific parameter matches
+                    break;
+            }
+        }
+
+        // Apply background color, text color, font size, font family, font weight, and update inner HTML
+        const element = document.getElementById(myID);
+        element.style.backgroundColor = backgroundColor;
+        element.style.color = textColor;
+        element.style.fontSize = "14px"; // Set font size to 11px
+        element.style.fontFamily = "Arial, sans-serif"; // Set font family to Arial
+        element.style.fontWeight = "bold"; // Set font weight to bold
+        element.innerHTML = displayText;
+    }
+}
+
+
+
+function displayVQOutputs(){
+
+Art_array = [PartO2_info, SartO2_info, PartCO2_info, pHart_info];
+art_params = [PartO2.toFixed(1), SartO2.toFixed(1), PartCO2.toFixed(1), pHart.toFixed(2)];
+
+for (let i = 0; i < Art_array.length; i++) {
+	myID = Art_array[i].param;
+
+	if ((art_params[i] > Art_array[i].upper_bound || art_params[i] < Art_array[i].lower_bound || isNaN(art_params[i])) && RESET == 0){
+		document.getElementById(myID).style.backgroundColor = "red";
+		ERROR = 1;
+
+		if (isNaN(art_params[i])){
+			art_params[i] = 0.0;
+		}
+
+    	}
+    	else{
+		document.getElementById(myID).style.backgroundColor = "#1D2951";
+    	}
+	document.getElementById(myID).innerHTML = art_params[i]+" "+Art_array[i].units;
+
+    }
+
+}
+
+
+function calculateVQPreliminary() {
+	calculatePreliminary();
+
+	VdotA_A_VdotA = 0.105;
+	QdotC_A_QdotC = 0.5;
+
+	VdotA_A = VdotA_A_VdotA * VdotA;
+	VdotA_B = VdotA - VdotA_A;
+        QdotC_A = QdotC_A_QdotC * QdotC;
+	QdotC_B = QdotC - QdotC_A;
+	VQ_A = VdotA_A/QdotC_A;
+	VQ_B = VdotA_B/QdotC_B;
+
+}
+
+
+function calculateDiffusionNumerics(){
+
+calculatePreliminary();
+
+var CV1 = 0.0;
+var CV2 = 0.0;
+var CV3 = 0.0;
+var CVa = 0.0;
+var CVb = 0.0;
+var CVc = 0.0;
+
+PcapO2 = PAO2;
+PcapCO2 = PACO2;
+
+Hb = 15;
+DLO2 = 32;
+VdotO2 = 300;
+calcVdotCO2();
+
+Hemoglobin(PcapO2, PcapCO2, Hb);
+
+CcapO2 = CO2;
+CcapCO2 = CCO2;
+ScapO2 = SO2;
+
+CvO2 = CcapO2 - 0.1 * VdotO2 / QdotC;
+CvCO2 = CcapCO2 + 0.1 * VdotCO2 / QdotC;
+CV1 = CvO2;
+
+IHemoglobin(CvO2, CvCO2, Hb);
+
+PvO2 = PO2;
+PvCO2 = PCO2;
+SvO2 = SO2;
+
+Integrate(PvO2, PvCO2, Hb, DLO2, QdotC, 50, PAO2, PACO2);
+CcapO2 = CO2;
+CcapCO2 = CCO2;
+ScapO2 = SO2;
+
+        CVa = CcapO2 - 0.1 * VdotO2 / QdotC;
+
+        if (Math.abs(CV1 - CVa) > 0.05) {
+            CvO2 = CV1 - 1.5 * (CV1 - CVa);
+            CV2 = CvO2;
+            IHemoglobin(CvO2, CvCO2, Hb);
+		PvO2 = PO2;
+		PvCO2 = PCO2;
+		SvO2 = SO2;
+
+            Integrate(PvO2, PvCO2, Hb, DLO2, QdotC, 50, PAO2, PACO2);
+CcapO2 = CO2;
+CcapCO2 = CCO2;
+ScapO2 = SO2;
+
+            CVb = CcapO2 - 0.1 * VdotO2 / QdotC;
+
+
+        if (Math.abs(CV2 - CVb) > 0.05) {
+            CvO2 = CV2 - (CV2 - CVb) * (CV2 - CV1) / (CV2 - CVb - (CV1 - CVa));
+            CV3 = CvO2;
+            if (CV3 < 0) {
+                throw "Warning: Mixed venous PO2 too low!";
+            }
+
+        IHemoglobin(CvO2, CvCO2, Hb);
+	PvO2 = PO2;
+	PvCO2 = PCO2;
+	SvO2 = SO2;
+
+        Integrate(PvO2, PvCO2, Hb, DLO2, QdotC, 50, PAO2, PACO2);
+CcapO2 = CO2;
+CcapCO2 = CCO2;
+ScapO2 = SO2;
+
+        for (CVc = CcapO2 - 0.1 * VdotO2 / QdotC; Math.abs(CV3 - CVc) > 0.05; CVc = CcapO2 - 0.1 *VdotO2 / QdotC) {
+ 
+             CV1 = CV2;
+             CVa = CVb;
+             CV2 = CV3;
+             CVb = CVc;
+             CvO2 = CV2 - (CV2 - CVb) * (CV2 - CV1) / (CV2 - CVb - (CV1 - CVa));
+             CV3 = CvO2;
+
+             if (CV3 < 0) {
+                 throw "Warning: Mixed venous PO2 too low!";
+             }
+
+            IHemoglobin(CvO2, CvCO2, Hb);
+		PvO2 = PO2;
+		PvCO2 = PCO2;
+		SvO2 = SO2;
+
+            Integrate(PvO2, PvCO2, Hb, DLO2, QdotC, 50, PAO2, PACO2);
+CcapO2 = CO2;
+CcapCO2 = CCO2;
+ScapO2 = SO2;
+
+                }
+                CvO2 = CVc;
+            }
+            else {
+                CvO2 = CVb;
+            }
+        }
+        else {
+            CvO2 = CVa;
+        }
+        CvCO2 = CcapCO2 + 0.1 * VdotCO2 / QdotC;
+        
+	IHemoglobin(CvO2, CvCO2, Hb);
+	PvO2 = PO2;
+	PvCO2 = PCO2;
+	SvO2 = SO2;
+}
+
+
+function calculateFinal(i){
+
+if (i == 0){
+calculatePreliminary();
+calculateDiffusionNumerics();
+}
+
+if (i == 1){
+calculatePreliminary();
+calculateVQPreliminary();
+calculateVQNumerics();
+}
+
+CartO2 = CvO2 * QdotS_QdotT + CcapO2 * (1.0 - QdotS_QdotT);
+CartCO2 = CvCO2 * QdotS_QdotT + CcapCO2 * (1.0 - QdotS_QdotT);
+
+IHemoglobin(CartO2, CartCO2, Hb);
+
+PartO2 = PO2;
+PartCO2 = PCO2;
+SartO2 = SO2;
+
+        pHcap = 7.6 - 0.005 * PcapCO2;
+        pHv = 7.59 - 0.005 * PvCO2;
+        pHart = 7.6 - 0.005 * PartCO2;
+        A_aO2Diff = PAO2 - PartO2;
+
+        Phys_VD_VT = (VdotE - VdotA) / VdotE;
+        Phys_QS_QT = (CcapO2 - CartO2) / (CcapO2 - CvO2);
+}
+
+
+function calculateVQNumerics() {
+	calculatePreliminary();
+	calculateVQPreliminary();
+        calculateVQNewton();
+
+        PAO2_A = PIO2 - PACO2_A * (FIO2 + (1.0 - FIO2) / R_A);
+        VdotCO2_A = VdotA_A * PACO2_A / 0.875;
+        VdotO2_A = VdotCO2_A / R_A;
+        VdotCO2_B = VdotCO2 - VdotCO2_A;
+        VdotO2_B = VdotO2 - VdotO2_A;
+        R_B = VdotCO2_B / VdotO2_B;
+        PACO2_B = 0.875 *VdotCO2_B / VdotA_B;
+        PAO2_B = PIO2 - PACO2_B * (FIO2 + (1.0 - FIO2) / R_B);
+        
+	PcapO2_A = PAO2_A;
+        PcapCO2_A = PACO2_A;
+        Hemoglobin(PcapO2_A, PcapCO2_A, Hb);
+	CcapO2_A = CO2;
+	CcapCO2_A = CCO2;
+	ScapO2_A = SO2;
+        pHcap_A = 7.6 - 0.005 * PcapCO2_A;
+        
+	PcapO2_B = PAO2_B;
+        PcapCO2_B = PACO2_B;
+        Hemoglobin(PcapO2_B, PcapCO2_B, Hb);
+	CcapO2_B = CO2;
+	CcapCO2_B = CCO2;
+	ScapO2_B = SO2;
+        pHcap_B = 7.6 - 0.005 * PcapCO2_B;
+
+        CcapO2 = QdotC_A_QdotC * CcapO2_A + (1 - QdotC_A_QdotC) * CcapO2_B;
+        CcapCO2 = QdotC_A_QdotC * CcapCO2_A + (1 - QdotC_A_QdotC) * CcapCO2_B;
+        IHemoglobin(CcapO2, CcapCO2, Hb);
+	PcapO2 = PO2;
+	PcapCO2 = PCO2;
+	ScapO2 = SO2;
+
+        CvO2 = CcapO2 - 0.1 * VdotO2 / QdotC;
+        CvCO2 = CcapCO2 + 0.1 * VdotCO2 / QdotC;
+        IHemoglobin(CvO2, CvCO2, Hb);
+	PvO2 = PO2;
+	PvCO2 = PCO2;
+	SvO2 = SO2;
+    }
+    
+
+    function calculateVQFinal() {
+	calculatePreliminary();
+	calculateVQPreliminary();
+	calculateVQNewton();
+	calculateVQNumerics();
+	calculateFinal(1);
+	calcVdotE();
+	calcPIO2();
+  	var FIO2 = +document.getElementById("FI_O2").value;
+  	var R = 0.8;
+	PACO2 = PartCO2;
+        VdotA = 0.875 * (VdotCO2 / PACO2);
+        Phys_VD_VT = (VdotE - VdotA) / VdotE;
+        PAO2 = PIO2 - PACO2 * (FIO2 + (1 - FIO2) / R);
+        Hemoglobin(PAO2, PACO2, Hb);
+	CcapO2 = CO2;
+	CcapCO2 = CCO2;
+	ScapO2 = SO2;
+        Phys_QS_QT = (CcapO2 - CartO2) / (CcapO2 - CvO2);
+        A_aO2Diff = PAO2 - PartO2;
+    }
+
+    
+    function calculateVQNewton() {
+	calculatePreliminary();
+	calculateVQPreliminary();
+	var Cmax = 1.33333 * Hb;
+        var tol = 5.0E-4;
+        var tolcheck = 0;
+        var counter = 0;
+        var loopmax = 1000;
+if (VdotA_A_VdotA < QdotC_A_QdotC){
+	if (FIO2 < 0.24){
+	setEstimates(46.563*Math.exp(-0.204*VQ_A), 0.3503*Math.exp(0.8598*VQ_A));
+	}
+	else if (FIO2 < 0.46){
+	setEstimates(53, 0.3);
+	}
+	else {
+	setEstimates(55, 0.2);
+	}
+}
+if (VdotA_A_VdotA > QdotC_A_QdotC){
+	setEstimates(8.1212*Math.log(VQ_A)+37.635, 0.9289*Math.log(VQ_A)+0.7024);
+}
+if (VdotA_A_VdotA == QdotC_A_QdotC){
+	setEstimates(40, 0.8);
+}
+        PACO2_A = PCO2est;
+        var PACO2_B = 0.0;
+        R_A = Rest;
+        var R_B = 0.0;
+        var PAO2_A = 0.0;
+        var PAO2_B = 0.0;
+        var y_A = 0.0;
+        var y_B = 0.0;
+        var U_A = 0.0;
+        var U_B = 0.0;
+        var ScO2_A = 0.0;
+        var ScO2_B = 0.0;
+        var CcCO2_A = 0.0;
+        var CcCO2_B = 0.0;
+        var CcO2_A = 0.0;
+        var CcO2_B = 0.0;
+        var VdotCO2_A = 0.0;
+        var VdotCO2_B = 0.0;
+        var VdotO2_A = 0.0;
+        var VdotO2_B = 0.0;
+        var CvCO2_A = 0.0;
+        var CvCO2_B = 0.0;
+        var CvO2_A = 0.0;
+        var CvO2_B = 0.0;
+        var U_A_exp = 0.0;
+        var U_B_exp = 0.0;
+        var y_A_exp = 0.0;
+        var y_B_exp = 0.0;
+        var dCcO2_A_dPACO2_A = 0.0;
+        var dCcO2_B_dPACO2_B = 0.0;
+        var dCcO2_A_dR_A = 0.0;
+        var dCcO2_B_dR_B = 0.0;
+        var dCcCO2_A_dPACO2_A = 0.0;
+        var dCcCO2_B_dPACO2_B = 0.0;
+        var dCcCO2_A_dR_A = 0.0;
+        var dCcCO2_B_dR_B = 0.0;
+        var dCvO2_A_dPACO2_A = 0.0;
+        var dCvO2_B_dPACO2_B = 0.0;
+        var dCvO2_A_dR_A = 0.0;
+        var dCvO2_B_dR_B = 0.0;
+        var dCvCO2_A_dPACO2_A = 0.0;
+        var dCvCO2_B_dPACO2_B = 0.0;
+        var dCvCO2_A_dR_A = 0.0;
+        var dCvCO2_B_dR_B = 0.0;
+        var dPACO2_B_dPACO2_A = 0.0;
+        var dR_B_dPACO2_A = 0.0;
+        var dR_B_dR_A = 0.0;
+        var F1 = 0.0;
+        var F2 = 0.0;
+        var dF1_dPACO2_A = 0.0;
+        var dF1_dR_A = 0.0;
+        var dF2_dPACO2_A = 0.0;
+        var dF2_dR_A = 0.0;
+        var detJ = 0.0;
+        var dPACO2_A = 0.0;
+        var dR_A = 0.0;
+
+	while (tolcheck == 0 && counter < loopmax) {
+            VdotCO2_A = VdotA_A * PACO2_A / 0.875;
+            VdotCO2_B = VdotCO2 - VdotCO2_A;
+            VdotO2_A = VdotCO2_A / R_A;
+            VdotO2_B = VdotO2 - VdotO2_A;
+            PACO2_B = 0.875 * VdotCO2_B / VdotA_B;
+            R_B = VdotCO2_B / VdotO2_B;
+            PAO2_A = PIO2 - PACO2_A * (FIO2 + (1 - FIO2) / R_A);
+            PAO2_B = PIO2 - PACO2_B * (FIO2 + (1 - FIO2) / R_B);
+            y_A = PAO2_A * (0.004273 + 0.041243 * Math.pow(PACO2_A, -0.5352));
+            y_B = PAO2_B * (0.004273 + 0.041243 * Math.pow(PACO2_B, -0.5352));
+            U_A = 0.406 * y_A + 1.82 * y_A * y_A + 39.59 * y_A * y_A * y_A;
+            U_B = 0.406 * y_B + 1.82 * y_B * y_B + 39.59 * y_B * y_B * y_B;
+            ScO2_A = 100 * U_A / (1.0 + U_A);
+            ScO2_B = 100 * U_B / (1.0 + U_B);
+            CcO2_A = 0.01 * Cmax * ScO2_A + 0.003 * PAO2_A;
+            CcO2_B = 0.01 * Cmax * ScO2_B + 0.003 * PAO2_B;
+            CcCO2_A = (14.9 - 0.014 * ScO2_A) * Math.pow(PACO2_A, 0.35);
+            CcCO2_B = (14.9 - 0.014 * ScO2_B) * Math.pow(PACO2_B, 0.35);
+            CvO2_A = CcO2_A - 0.1 * VdotO2_A / QdotC_A;
+            CvO2_B = CcO2_B - 0.1 * VdotO2_B / QdotC_B;
+            CvCO2_A = CcCO2_A + 0.1 * VdotCO2_A / QdotC_A;
+            CvCO2_B = CcCO2_B + 0.1 * VdotCO2_B / QdotC_B;
+            F1 = CvO2_A - CvO2_B;
+            F2 = CvCO2_A - CvCO2_B;
+            U_A_exp = 1.0 / ((1.0 + U_A) * (1.0 + U_A));
+            U_B_exp = 1.0 / ((1.0 + U_B) * (1.0 + U_B));
+            y_A_exp = 0.406 + 3.64 * y_A + 118.77 * y_A * y_A;
+            y_B_exp = 0.406 + 3.64 * y_B + 118.77 * y_B * y_B;
+            dCcO2_A_dPACO2_A = Cmax * U_A_exp * y_A_exp * (PAO2_A * 0.041243 * -0.5352 * Math.pow(PACO2_A, -1.5352) - (0.004273 + 0.041243 * Math.pow(PACO2_A, -0.5352)) * (FIO2 + (1 - FIO2) / R_A)) - 0.003 * (FIO2 + (1 - FIO2) / R_A);
+            dCcO2_B_dPACO2_B = Cmax * U_B_exp * y_B_exp * (PAO2_B * 0.041243 * -0.5352 * Math.pow(PACO2_B, -1.5352) - (0.004273 + 0.041243 * Math.pow(PACO2_B, -0.5352)) * (FIO2 + (1 - FIO2) / R_B)) - 0.003 * (FIO2 + (1 - FIO2) / R_B);
+            dCcO2_A_dR_A = Cmax * U_A_exp * y_A_exp * (0.004273 + 0.041243 * Math.pow(PACO2_A, -0.5352)) * PACO2_A * (1.0 - FIO2) / (R_A * R_A) + 0.003 * PACO2_A * (1.0 - FIO2) / (R_A * R_A);
+            dCcO2_B_dR_B = Cmax * U_B_exp * y_B_exp * (0.004273 + 0.041243 * Math.pow(PACO2_B, -0.5352)) * PACO2_B * (1.0 - FIO2) / (R_B * R_B) + 0.003 * PACO2_B * (1.0 - FIO2) / (R_B * R_B);
+            dCcCO2_A_dPACO2_A = (14.9 - 0.014 * ScO2_A) * 0.35 * Math.pow(PACO2_A, -0.65) + Math.pow(PACO2_A, 0.35) * 1.4 * U_A_exp * y_A_exp * (PAO2_A * 0.041243 * 0.5352 * Math.pow(PACO2_A, -1.5352) + (0.004273 + 0.041243 * Math.pow(PACO2_A, -0.5352)) * (FIO2 + (1 - FIO2) / R_A));
+            dCcCO2_B_dPACO2_B = (14.9 - 0.014 * ScO2_B) * 0.35 * Math.pow(PACO2_B, -0.65) + Math.pow(PACO2_B, 0.35) * 1.4 * U_B_exp * y_B_exp * (PAO2_B * 0.041243 * 0.5352 * Math.pow(PACO2_B, -1.5352) + (0.004273 + 0.041243 * Math.pow(PACO2_B, -0.5352)) * (FIO2 + (1 - FIO2) / R_B));
+            dCcCO2_A_dR_A = Math.pow(PACO2_A, 0.35) * -1.4 * U_A_exp * y_A_exp * (0.004273 + 0.041243 * Math.pow(PACO2_A, -0.5352)) * PACO2_A * (1.0 - FIO2) / (R_A * R_A);
+            dCcCO2_B_dR_B = Math.pow(PACO2_B, 0.35) * -1.4 * U_B_exp * y_B_exp * (0.004273 + 0.041243 * Math.pow(PACO2_B, -0.5352)) * PACO2_B * (1.0 - FIO2) / (R_B * R_B);
+            dCvO2_A_dPACO2_A = dCcO2_A_dPACO2_A - VdotA_A / (8.75 * R_A * QdotC_A);
+            dCvO2_B_dPACO2_B = dCcO2_B_dPACO2_B - VdotA_B / (8.75 * R_B * QdotC_B);
+            dCvO2_A_dR_A = dCcO2_A_dR_A + 0.1 * VdotCO2_A / (R_A * R_A * QdotC_A);
+            dCvO2_B_dR_B = dCcO2_B_dR_B + 0.1 * VdotCO2_B / (R_B * R_B * QdotC_B);
+            dCvCO2_A_dPACO2_A = dCcCO2_A_dPACO2_A + VdotA_A / (8.75 * QdotC_A);
+            dCvCO2_B_dPACO2_B = dCcCO2_B_dPACO2_B + VdotA_B / (8.75 * QdotC_B);
+            dCvCO2_A_dR_A = dCcCO2_A_dR_A;
+            dCvCO2_B_dR_B = dCcCO2_B_dR_B;
+            dPACO2_B_dPACO2_A = -1.0 * VdotA_A / VdotA_B;
+            dR_B_dPACO2_A = VdotA_A * (VdotCO2_B / (R_A * VdotO2 - VdotCO2_A) - 1.0) / (0.875 * (VdotO2 - VdotCO2_A / R_A));
+            dR_B_dR_A = -1.0 * VdotCO2_A * VdotCO2_B / ((R_A * VdotO2 - VdotCO2_A) * (R_A * VdotO2 - VdotCO2_A));
+            dF1_dPACO2_A = dCvO2_A_dPACO2_A - dCvO2_B_dPACO2_B * dPACO2_B_dPACO2_A - dCvO2_B_dR_B * dR_B_dPACO2_A;
+            dF1_dR_A = dCvO2_A_dR_A - dCvO2_B_dR_B * dR_B_dR_A;
+            dF2_dPACO2_A = dCvCO2_A_dPACO2_A - dCvCO2_B_dPACO2_B * dPACO2_B_dPACO2_A - dCvCO2_B_dR_B * dR_B_dPACO2_A;
+            dF2_dR_A = dCvCO2_A_dR_A - dCvCO2_B_dR_B * dR_B_dR_A;
+            detJ = dF1_dPACO2_A * dF2_dR_A - dF1_dR_A * dF2_dPACO2_A;
+            dPACO2_A = (dF1_dR_A * F2 - dF2_dR_A * F1) / detJ;
+            dR_A = (dF2_dPACO2_A * F1 - dF1_dPACO2_A * F2) / detJ;
+            if (Math.abs(dPACO2_A) + Math.abs(dR_A) > tol) {
+                PACO2_A += dPACO2_A;
+                R_A += dR_A;
+            }
+            else {
+                tolcheck = 1;
+            }
+            ++counter;
+        }
+
+        if (counter == loopmax) {
+		throw "WARNING: ALGORITHM NOT CONVERGENT!!";
+        }
+
+        PACO2_A = PACO2_A;
+        R_A = R_A;
+    }
+
+
+  
+function Hemoglobin(PO2, PCO2, Hb){
+        var Cmax = 1.33333 * Hb;
+        var y = PO2 * (0.004273 + 0.041243 * Math.pow(PCO2, -0.5352));
+        var U = 0.406 * y + 1.82 * y * y + 39.59 * y * y * y;
+        SO2 = 100 * U / (1.0 + U);
+        CO2 = 0.01 * Cmax * SO2 + 0.003 * PO2;
+        CCO2 = (14.9 - 0.014 * SO2) * Math.pow(PCO2, 0.35);
+    }
+
+
+function IHemoglobin(CO2, CCO2, Hb){
+        var Cmax = 1.33333 * Hb;
+        var y = 0.0;
+        var U = 0.0;
+        var ConvLoopMax = 6;
+        var b = 0.0;
+        var estO2Cont = 0.0;
+        var PO2Min = 0.0;
+	calcPIO2();
+        var PO2Max = PIO2;
+        var PO2est = 0.5 * (PO2Min + PO2Max);
+        SO2 = 75.0 * CO2 / Hb;
+        if (SO2 > 100.0) {
+            SO2 = 100.0;
+        }
+        PCO2 = Math.pow(CCO2 / (14.9 - 0.014 * SO2), 2.857);
+        b = 0.004273 + 0.041243 * Math.pow(PCO2, -0.5352);
+        for (let i = 0; i < ConvLoopMax; ++i) {
+            y = b * PO2est;
+            U = 0.406 * y + 1.82 * y * y + 39.59 * y * y * y;
+            estO2Cont = Cmax * U / (1.0 + U) + 0.003 * PO2est;
+            if (CO2 < estO2Cont) {
+                PO2Max = PO2est;
+                PO2est = 0.5 * (PO2Min + PO2Max);
+            }
+            else {
+                PO2Min = PO2est;
+                PO2est = 0.5 * (PO2Min + PO2Max);
+            }
+        }
+        PO2 = PO2est;
+	IHemoglobin2(CO2, CCO2, Hb, PO2, PCO2);
+    }
+
+function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2External){
+        var dx = 0.1 * DLO2 / (QdotC * n);
+        var dCO2Cont = 0.0;
+        var dO2Cont = 0.0;
+        PO2Fin = PO2Init;
+        PCO2Fin = PCO2Init;
+        Hemoglobin(PO2Fin, PCO2Fin, Hb);
+        for (let i = 1; i <= n; ++i) {
+            dO2Cont = (PO2External - PO2Fin) * dx;
+            dCO2Cont = 20 * (PCO2External - PCO2Fin) * dx;
+            CO2 = CO2 + dO2Cont;
+            CCO2 = CCO2 + dCO2Cont;
+            IHemoglobin2(CO2, CCO2, Hb, PO2Fin, PCO2Fin);
+		PCO2Fin = PCO2;
+		PO2Fin = PO2;
+            if (PCO2Fin <= PCO2External) {
+                PCO2Fin = PCO2External;
+            }
+            if (PO2Fin >= PO2External) {
+                PO2Fin = PO2External;
+            }
+            Hemoglobin(PO2Fin, PCO2Fin, Hb);
+        }
+    }
+
+    function IHemoglobin2(CO2, CCO2, Hb, estPO2, estPCO2){
+        var Cmax = 1.33333 * Hb;
+        var tol = 0.005;
+        var tolcheck = 0;
+        var counter = 0;
+        var loopmax = 100;
+        var y = 0.0;
+        var U = 0.0;
+        var F1 = 0.0;
+        var F2 = 0.0;
+        var diff = 0.0;
+        var dF1_dPO2 = 0.0;
+        var dF1_dPCO2 = 0.0;
+        var dF2_dPO2 = 0.0;
+        var dF2_dPCO2 = 0.0;
+        var detJ = 0.0;
+        var dPO2 = 0.0;
+        var dPCO2 = 0.0;
+        PO2 = estPO2;
+        PCO2 = estPCO2;
+        while (tolcheck == 0 && counter < loopmax) {
+            y = PO2 * (0.004273 + 0.041243 * Math.pow(PCO2, -0.5352));
+            U = 0.406 * y + 1.82 * y * y + 39.59 * y * y * y;
+            SO2 = 100 * U / (1.0 + U);
+            F1 = 0.01 * Cmax * SO2 + 0.003 * PO2 - CO2;
+            F2 = (14.9 - 0.014 * SO2) * Math.pow(PCO2, 0.35) - CCO2;
+            diff = (0.406 + 3.64 * y + 118.77 * y * y) / ((1.0 + U) * (1.0 + U));
+            dF1_dPO2 = Cmax * diff * y / PO2 + 0.003;
+            dF1_dPCO2 = Cmax * diff * -0.0220732536 * PO2 * Math.pow(PCO2, -1.5352);
+            dF2_dPO2 = -1.4 * Math.pow(PCO2, 0.35) * diff * y / PO2;
+            dF2_dPCO2 = (4.725 + 0.49 / (1.0 + U)) * Math.pow(PCO2, -0.65) + 1.4 * diff * 0.0220732536 * PO2 * Math.pow(PCO2, -1.1852);
+            detJ = dF1_dPO2 * dF2_dPCO2 - dF1_dPCO2 * dF2_dPO2;
+            dPO2 = (dF1_dPCO2 * F2 - dF2_dPCO2 * F1) / detJ;
+            dPCO2 = (dF2_dPO2 * F1 - dF1_dPO2 * F2) / detJ;
+            if (Math.abs(dPO2) + Math.abs(dPCO2) > tol) {
+                PO2 = PO2 + dPO2;
+                PCO2 = PCO2 + dPCO2;
+            }
+            else {
+                tolcheck = 1;
+            }
+            ++counter;
+        }
+        if (counter == loopmax) {
+            throw "WARNING: ALGORITHM NOT CONVERGENT!!";
+        }
+    }
+
+
+</script>
+
+
+<div class="item01" >
+</div>
+
+<div class="item0" >
+<h2 style="font-family:Apercu, helvetica, sans-serif; background-color: #ffffff; color:black; padding:0px 10px"><b>ABG Calculator</b></h2>
+</div>
+
+<div class="info">
+</div>
+
+</head>
+<body style="background-color:#ffffff">
+
+<div class="grid-container" style="background-color: #ffffff">
+
+
+<div class="disease">
+<div class = "custom-select" style="font-family: Apercu, helvetica, sans-serif; color: black;">
+	<label for="disease_selection"><b>Disease State:</b></label>
+	<select name="disease_selection" id="disease_selection" onchange="calcShuntPrelim()">
+  		<option value="normal" selected>Normal</option>
+  		<option value="asthma">Severe asthma</option>
+  		<option value="ards">ARDS</option>
+	</select>
+	</div>
+
+</div>
+
+  
+
+<div class="in">
+  <div>
+<div class="textbox2">
+    <button style="width:100%">RR</button>
+</div>
+
+<div class="input2">
+    <input id="RR" type="range" min="5" max="40" step="1" value="15" oninput="updateDisplay('RR_display', this.value)" style="width:100%">
+    <div id="RR_display">15</div>
+</div>
+  </div>
+
+  <div>
+  <div class="textbox3">
+    <button style="width:100%">VT</button>
+</div>
+
+<div class="input3">
+    <input id="VTidal" type="range" min="200" max="800" step="10" value="500" oninput="updateDisplay('VT_display', this.value)" style="width:100%">
+    <div id="VT_display">500</div>
+</div>
+  </div>
+
+  <div>
+  <div class="textbox1">
+    <button style="width:100%">FIO2</button>
+</div>
+
+<div class="input1">
+    <input id="FI_O2" type="range" min="0.21" max="1.0" step="0.01" value="0.21" oninput="updateDisplay('FI_O2_display', this.value)" style="width:100%">
+    <div id="FI_O2_display">0.21</div>
+</div>
+  </div>
+  <div>
+<div class="textbox4">
+    <button style="width:100%">PEEP</button>
+</div>
+
+<div class="input4">
+    <input id="PEEP_value" type="range" min="0" max="20" step="1" value="0" oninput="updateDisplay('PEEP_display', this.value)" onchange="calcShuntPrelim()" style="width:100%">
+    <div id="PEEP_display">0</div>
+</div>
+  </div>
+<script>
+    function updateDisplay(elementId, value) {
+        document.getElementById(elementId).textContent = value;
+    }
+</script>
+
+</div>
+
+	<div class = "button1">
+	<button onclick='showOutputs()' style="width:95%;background-color: #C2D0FF; color: #1D2951; font-size: 14px; padding: 6px; text-align:center; text-decoration: none;"><b>Draw Arterial Blood Gas</b></button>
+	</div>
+
+
+<div class="out">
+  <div class="textbox8">
+    <button onclick="showInfo(pHart_info)" style="width:100%" >pH</button>
+  </div>
+
+  <div class="output4">
+    <textarea id="pHart" rows="1" cols="5" readonly="true" style="width:95%;"></textarea> 
+  </div>
+  
+  <div class="textbox5">
+    <button onclick="showInfo(PartCO2_info)" style="width:100%">PCO2</button>
+  </div>
+
+  <div class="output1">
+    <textarea id="PartCO2" rows="1" cols="5" readonly="true" style="width:95%;"></textarea> 
+  </div>
+
+  <div class="textbox6">
+    <button onclick="showInfo(PartO2_info)" style="width:100%">PO2</button>
+  </div>
+
+  <div class="output2">
+    <textarea id="PartO2" rows="1" cols="5" readonly="true" style="width:95%;"></textarea> 
+  </div>
+
+  <div class="textbox7">
+    <button onclick="showInfo(SartO2_info)" style="width:100%">SpO2</button>
+  </div>
+
+  <div class="output3">
+    <textarea id="SartO2" rows="1" cols="5" readonly="true" style="width:95%;"></textarea> 
+  </div>
+</div>
+
+<div class="button2">
+  <button onclick="reset()" style="width:95%;background-color: #C2D0FF; color:#1D2951; font-size: 14px; padding: 6px; text-align: center; text-decoration: none;">
+    <b>Reset</b>
+  </button>
+</div>
+
+
+
+
+</body>
+</html>
