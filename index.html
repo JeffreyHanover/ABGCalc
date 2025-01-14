@@ -343,7 +343,11 @@ padding: 2px;
 
 
 <script>
-
+<script>
+        function refreshPage() {
+            location.reload();
+        }
+    </script>
 //These functions correspond to the calculatePreliminary() function from LungCalc.class.txt 
  
 function calcPB(){
@@ -1542,11 +1546,10 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
 </div>
 
 <div class="button2">
-  <button onclick="reset()" style="width:95%;background-color: #C2D0FF; color:#1D2951; font-size: 14px; padding: 6px; text-align: center; text-decoration: none;">
+  <button onclick="refreshPage()" style="width:95%;background-color: #C2D0FF; color:#1D2951; font-size: 14px; padding: 6px; text-align: center; text-decoration: none;">
     <b>Reset</b>
   </button>
 </div>
-
 
 
 
