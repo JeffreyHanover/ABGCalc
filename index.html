@@ -882,31 +882,121 @@ function displayOutputs() {
 
 
 
-function displayVQOutputs(){
+function displayVQOutputs() {
+    const Art_array = [PartO2_info, SartO2_info, PartCO2_info, pHart_info];
+    const art_params = [
+        PartO2.toFixed(1), 
+        SartO2.toFixed(1), 
+        PartCO2.toFixed(1), 
+        pHart.toFixed(2)
+    ];
 
-Art_array = [PartO2_info, SartO2_info, PartCO2_info, pHart_info];
-art_params = [PartO2.toFixed(1), SartO2.toFixed(1), PartCO2.toFixed(1), pHart.toFixed(2)];
+    for (let i = 0; i < Art_array.length; i++) {
+        const myID = Art_array[i].param;
+        const paramValue = parseFloat(art_params[i]);
 
-for (let i = 0; i < Art_array.length; i++) {
-	myID = Art_array[i].param;
+        // Initialize default styles
+        let backgroundColor = "#ffffff"; // Default background color
+        let textColor = "black"; // Default text color
+        let displayText = `${paramValue} ${Art_array[i].units}`;
 
-	if ((art_params[i] > Art_array[i].upper_bound || art_params[i] < Art_array[i].lower_bound || isNaN(art_params[i])) && RESET == 0){
-		document.getElementById(myID).style.backgroundColor = "red";
-		ERROR = 1;
+        if (isNaN(paramValue)) {
+            backgroundColor = "red"; // Invalid number
+            textColor = "white";
+            displayText = "Invalid Value";
+        } else {
+            switch (Art_array[i].param) {
+                case "pHart": // pH
+                    if (paramValue < 7.2) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 7.2 && paramValue < 7.35) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 7.35 && paramValue <= 7.45) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 7.45 && paramValue <= 7.6) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
 
-		if (isNaN(art_params[i])){
-			art_params[i] = 0.0;
-		}
+                case "PartCO2": // pCO2
+                    if (paramValue < 25.0) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 25.0 && paramValue < 35.0) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 35.0 && paramValue <= 45.0) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 45.0 && paramValue <= 55.0) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
 
-    	}
-    	else{
-		document.getElementById(myID).style.backgroundColor = "#1D2951";
-    	}
-	document.getElementById(myID).innerHTML = art_params[i]+" "+Art_array[i].units;
+                case "PartO2": // pO2
+                    if (paramValue < 50.0) {
+                        backgroundColor = "red"; // Extreme low
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    } else if (paramValue >= 50.0 && paramValue < 74.0) {
+                        backgroundColor = "white"; // Normal low
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↓`;
+                    } else if (paramValue >= 74.0 && paramValue <= 104.0) {
+                        backgroundColor = "white"; // Normal range
+                        textColor = "black";
+                        displayText = `${paramValue} ${Art_array[i].units}`;
+                    } else if (paramValue > 104.0 && paramValue <= 250.0) {
+                        backgroundColor = "white"; // Normal high
+                        textColor = "red";
+                        displayText = `${paramValue} ${Art_array[i].units} ↑`;
+                    } else {
+                        backgroundColor = "red"; // Extreme high
+                        textColor = "white";
+                        displayText = `${paramValue} ${Art_array[i].units}!!`;
+                    }
+                    break;
 
+                default:
+                    // Default case if no specific parameter matches
+                    break;
+            }
+        }
+
+        // Apply styles and update the content of the element
+        const element = document.getElementById(myID);
+        if (element) {
+            element.style.backgroundColor = backgroundColor;
+            element.style.color = textColor;
+            element.style.fontSize = "14px"; // Consistent font size
+            element.style.fontFamily = "Arial, sans-serif"; // Consistent font family
+            element.style.fontWeight = "bold"; // Consistent font weight
+            element.innerHTML = displayText;
+        }
     }
-
 }
+
 
 
 function calculateVQPreliminary() {
