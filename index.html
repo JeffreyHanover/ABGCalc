@@ -1687,7 +1687,7 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
 	     <p>The following formulas are used here to calculate <b>pCO₂</b>, <b>pH</b>, and <b>pO₂</b>.</p>
   <h2>Partial Pressure of Arterial CO₂ (pCO₂):</h2>
 
-  <p class="formula"><span class="bold">pCO₂ = 0.875 ⋅ (V&#x0307;<sub>CO₂</sub> / V&#x0307;<sub>A</sub>)</span></p>
+  <p class="formula"><span class="formula" style="font-family: times new roman; text-align: center">pCO₂ = 0.875 ⋅ (V&#x0307;<sub>CO₂</sub> / V&#x0307;<sub>A</sub>)</span></p>
     <p>Where:</p>
     <ul>
         <li>
@@ -1714,7 +1714,7 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
     </ul>
 <h2>pH of the Arterial Blood:</h2>
 <p class="formula"><span class="bold">pH<sub></sub> = 7.6 − 0.005 ⋅ pCO₂</span></p>
-    <p>This is a simplified, linear approximation of the Henderson-Hasselbalch equation assumes that bicarbonate levels remain relatively constant. This assumption is reasonable for acute respiratory disturbances, but for simplicity this model does not account for metabolic compensation.</p>
+    <p>This is a simplified, linear approximation of the Henderson-Hasselbalch equation. It assumes that bicarbonate levels remain relatively constant. This assumption is reasonable for acute respiratory disturbances, but this model is limited by the inability to account for metabolic compensation or concurrent metabolic acid-base disturbance.</p>
 
     <h2>Partial Pressure of Arterial O₂ (pO₂):</h2>
     <p class="formula">pO₂ = PIO₂ − (pCO₂ ⋅ (FIO₂ + ((1 − FIO₂) / R)))</p>
