@@ -244,7 +244,46 @@ button {
     grid-template-rows: auto auto auto auto;
   }
 
-  
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: black;
+            margin: 20px;
+        }
+
+        h1, h2, h3 {
+            color: black;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        .formula {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.1em;
+            font-style: italic;
+            text-align: center
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        ul {
+            margin: 10px 0 10px 20px;
+        }  
   
   .calcButtons {
     grid-template-columns: auto;
@@ -1655,5 +1694,72 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
       formulasImage.style.display = formulasImage.style.display === "none" ? "block" : "none";
     });
   </script>
+	    <p>The following formulas are used here to calculate <b>pCO₂</b>, <b>pH</b>, and <b>pO₂</b>.</p>
+  <h2>Partial Pressure of Arterial CO₂ (pCO₂):</h2>
+
+  <p class="formula"><span class="bold">pCO₂ = 0.875 ⋅ (V&#x0307;<sub>CO₂</sub> / V&#x0307;<sub>A</sub>)</span></p>
+    <p>Where:</p>
+    <ul>
+        <li>
+          <span class="bold">0.875</span> is a conversion factor</p>
+            <span class="bold">V&#x0307;<sub>CO₂</sub></span> is the production rate of Carbon dioxide, calculated as:
+            <p class="formula">V&#x0307;<sub>CO₂</sub> = 300 ⋅ R</p>
+            <p>with</p> 
+              <ul>
+                <li><span class="formula">R</span> being the respiratory exchange ratio, modeled here as a constant 0.8. </li>
+                <li><span class="formula">300 mL/min</span> is a typical resting <span class="formula">V&#x0307;<sub>CO₂</sub></span> for an average adult.</p></li>
+  </ul>
+        </li>
+        <li>
+            <span class="bold">V&#x0307;<sub>A</sub></span> is Alveolar ventilation, calculated as:
+            <p class="formula">V&#x0307;<sub>A</sub> = 0.001 ⋅ (V<sub>T</sub> − V<sub>D</sub>) ⋅ f</p>
+            <p>with:</p>
+            <ul>
+                <li><span class="formula">V<sub>T</sub></span>: Tidal volume</li>
+                <li><span class="formula">V<sub>D</sub></span>: Dead space volume</li>
+                <li><span class="formula">f</span>: Respiratory rate</li>
+                <li><span class="formula">0.001</span> is a conversion factor to scale from mL to L</li>
+            </ul>
+        </li>
+    </ul>
+<h2>pH of the Arterial Blood:</h2>
+<p class="formula"><span class="bold">pH<sub></sub> = 7.6 − 0.005 ⋅ pCO₂</span></p>
+    <p>This is a simplified, linear approximation of the Henderson-Hasselbalch equation assumes that bicarbonate levels remain relatively constant. This assumption is reasonable for acute respiratory disturbances, but for simplicity this model does not account for metabolic compensation.</p>
+
+    <h2>Partial Pressure of Arterial O₂ (pO₂):</h2>
+    <p class="formula">pO₂ = PIO₂ − (pCO₂ ⋅ (FIO₂ + ((1 − FIO₂) / R)))</p>
+    <p>Where:</p>
+    <ul>
+        <li>
+            <span class="bold">PIO₂</span> is the partial pressure of inspired oxygen, calculated as:
+            <p class="formula">PIO₂ = FIO₂ ⋅ (P<sub>B</sub> − 47)</p>
+            <p>where:</p>
+            <ul>
+                <li><span class="formula">FIO₂</span> is the fraction of inspired oxygen</li>
+                <li><span class="formula">P<sub>B</sub></span> is barometric pressure modeled here as a constant <b>760 mmHg</b></li>
+                <li><b>47 mmHg</b> is the partial pressure of water vapor in the alveolar space at typical body temperature</li>
+            </ul>
+        </li>
+        <li><span class="formula">R</span> being the respiratory exchange ratio, modeled here as a constant 0.8.</li>
+    </ul>
+
+    <h2>Additional Parameters:</h2>
+<p><b>Dead Space Volume (V<sub>D</sub>)</b> in this simulator varies based on disease state and PEEP. These formulas are not empirically validated, they were created to model the basic concept that higher levels of PEEP lead to increasing V<sub>D</sub>. Here a sigmoidal relationship between V<sub>D</sub> and PEEP is assumed, with lower PEEP values having minimal impact on V<sub>D</sub>, but higher PEEP values having substantial impact on V<sub>D</sub>.</p>
+    <p><b>For Normal Lungs:</b></p>
+    <p class="formula">V<sub>D</sub> = 150 + (70 / (1 + e<sup>−1.5 ⋅ (PEEP − 12)</sup>))</p>
+    <p><b>For ARDS:</b></p>
+    <p class="formula">V<sub>D</sub> = 150 + (100 / (1 + e<sup>−1.5 ⋅ (PEEP − 15)</sup>))</p>
+    <p><b>For Severe Asthma:</b></p>
+    <p class="formula">V<sub>D</sub> = 250 + (100 / (1 + e<sup>−1.5 ⋅ (PEEP − 12)</sup>))</p>
+
+<p><b>Shunt Fraction (Q<sub>dotS</sub> / Q<sub>dotT</sub>)</b> is the proportion of cardiac output that bypasses the alveolar gas exchange process. Here it is assumed to vary based on disease, with a low constant shunt in normal or asthmatic lungs, and a much higher shunt fraction that is improved by PEEP in ARDS.</p>
+    <p><b>For ARDS:</b></p>
+    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.4 − (0.32 / (1 + e<sup>−1.5 ⋅ (PEEP − 10)</sup>))</p>
+    <p><b>For Normal:</b></p>
+    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
+    <p><b>For Asthma:</b></p>
+    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
+
+<p><b>V/Q mismatch</b> is activated when the "severe asthma" disease state is collected. This mode creates a two-compartment lung model, one with a V/Q ratio of ~0.3 (due to airway narrowing and obstruction) and one with a V/Q ratio of ~2.5 (due to hyperventilation in relatively unobstructed regions). For simplicity, each of these compartments is modeled as receiving 50% of cardiac output, and the regions are averaged to produce the partial pressure values, which are plugged in to the equations above.</p>
 </body>
 </html>  
