@@ -1684,17 +1684,7 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
     
     <!-- Hidden image container -->
     <div id="formulas-image" style="display: none; text-align: center; margin-top: 10px;">>
-      <img src="https://raw.githubusercontent.com/JeffreyHanover/ABGCalc/refs/heads/main/formulas.png" alt="Formulas" style="max-width: 100%; height: auto;">
-    </div>  
-</div>
-  <script>
-    document.getElementById("formulas-link").addEventListener("click", function () {
-      const formulasImage = document.getElementById("formulas-image");
-      // Toggle display between "none" and "block"
-      formulasImage.style.display = formulasImage.style.display === "none" ? "block" : "none";
-    });
-  </script>
-	    <p>The following formulas are used here to calculate <b>pCO₂</b>, <b>pH</b>, and <b>pO₂</b>.</p>
+	     <p>The following formulas are used here to calculate <b>pCO₂</b>, <b>pH</b>, and <b>pO₂</b>.</p>
   <h2>Partial Pressure of Arterial CO₂ (pCO₂):</h2>
 
   <p class="formula"><span class="bold">pCO₂ = 0.875 ⋅ (V&#x0307;<sub>CO₂</sub> / V&#x0307;<sub>A</sub>)</span></p>
@@ -1761,5 +1751,15 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
     <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
 
 <p><b>V/Q mismatch</b> is activated when the "severe asthma" disease state is collected. This mode creates a two-compartment lung model, one with a V/Q ratio of ~0.3 (due to airway narrowing and obstruction) and one with a V/Q ratio of ~2.5 (due to hyperventilation in relatively unobstructed regions). For simplicity, each of these compartments is modeled as receiving 50% of cardiac output, and the regions are averaged to produce the partial pressure values, which are plugged in to the equations above.</p>
+    </div>  
+</div>
+  <script>
+    document.getElementById("formulas-link").addEventListener("click", function () {
+      const formulasImage = document.getElementById("formulas-image");
+      // Toggle display between "none" and "block"
+      formulasImage.style.display = formulasImage.style.display === "none" ? "block" : "none";
+    });
+  </script>
+	   
 </body>
 </html>  
