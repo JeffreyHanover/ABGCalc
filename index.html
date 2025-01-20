@@ -431,7 +431,7 @@ function calcPAO2(){
   var R = 0.8;
   calcPIO2();
   calcPACO2();
-  PAO2 = PIO2 - (PACO2*(FIO2 + (1-FIO2)/R));
+  PAO2 = Math.max(2.1, PIO2 - (PACO2 * (FIO2 + (1 - FIO2) / R)));
 }
 
 function calcShuntPrelim(){
@@ -1714,8 +1714,8 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
         </li>
     </ul>
 <h2>pH of the Arterial Blood:</h2>
-<p class="formula"><span class="bold">pH<sub></sub> = 7.6 − 0.005 ⋅ pCO₂</span></p>
-    <p>This is a simplified, linear approximation of the Henderson-Hasselbalch equation. It assumes that bicarbonate levels remain relatively constant. This assumption is reasonable for acute respiratory disturbances, but this model is limited by the inability to account for metabolic compensation or concurrent metabolic acid-base disturbance.</p>
+<p class="formula"><span class="bold">pH<sub></sub> = 6.1 + log<sub>10</sub>(24/(0.03 ⋅  pCO₂))</span></p>
+    <p>This is the Henderson-Hasselbalch equation with the bicarbonate concentration as a constant 24 mEq/L for simplicity. This model may be more reasonable for acute respiratory disturbances, but a limitation is the inability to account for metabolic compensation or concurrent metabolic acid-base disturbance.</p>
 
     <h2>Partial Pressure of Arterial O₂ (pO₂):</h2>
     <p class="formula">pO₂ = PIO₂ − (pCO₂ ⋅ (FIO₂ + ((1 − FIO₂) / R)))</p>
