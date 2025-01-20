@@ -477,7 +477,7 @@ if (disease == "normal") {
     }
 
     // Adjusted sigmoidal equation for VD (normal state)
-    VD = 150 + (70 / (1 + Math.exp(-1.5 * (PEEP - 12))));
+    VD = 150 + (70 / (1 + Math.exp(-0.5 * (PEEP - 12))));
 
     // Constant QdotS/QdotT for normal state
     QdotS_QdotT = 0.02;
@@ -508,7 +508,7 @@ if (disease == "asthma") {
     }
 
     // Sigmoidal equation for VD in asthma
-    VD = 250 + (100 / (1 + Math.exp(-1.5 * (PEEP - 12)))); // Adjusted to target 350 mL at PEEP = 20
+    VD = 250 + (100 / (1 + Math.exp(-0.5 * (PEEP - 12)))); // Adjusted to target 350 mL at PEEP = 20
 
     // Fixed value for QdotS/QdotT
     QdotS_QdotT = 0.02;
@@ -1737,17 +1737,17 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
     <h2>Additional Parameters:</h2>
 <p><b>Dead Space Volume (V<sub>D</sub>)</b> in this simulator varies based on disease state and PEEP. These formulas are not empirically validated, they were created to model the basic concept that higher levels of PEEP lead to increasing V<sub>D</sub>. Here a sigmoidal relationship between V<sub>D</sub> and PEEP is assumed, with lower PEEP values having minimal impact on V<sub>D</sub>, but higher PEEP values having substantial impact on V<sub>D</sub>.</p>
     <p><b>For Normal Lungs:</b></p>
-    <p class="formula">V<sub>D</sub> = 150 + (70 / (1 + e<sup>−1.5 ⋅ (PEEP − 12)</sup>))</p>
+    <p class="formula">V<sub>D</sub> = 150 + (70 / (1 + e<sup>−0.5 ⋅ (PEEP − 12)</sup>))</p>
     <p><b>For ARDS:</b></p>
     <p class="formula">V<sub>D</sub> = 150 + (100 / (1 + e<sup>−1.5 ⋅ (PEEP − 15)</sup>))</p>
     <p><b>For Severe Asthma:</b></p>
-    <p class="formula">V<sub>D</sub> = 250 + (100 / (1 + e<sup>−1.5 ⋅ (PEEP − 12)</sup>))</p>
+    <p class="formula">V<sub>D</sub> = 250 + (100 / (1 + e<sup>−0.5 ⋅ (PEEP − 12)</sup>))</p>
 
 <p><b>Shunt Fraction (Q<sub>dotS</sub> / Q<sub>dotT</sub>)</b> is the proportion of cardiac output that bypasses the alveolar gas exchange process. Here it is assumed to vary based on disease, with a low constant shunt in normal or asthmatic lungs, and a much higher shunt fraction that is improved by PEEP in ARDS.</p>
-    <p><b>For ARDS:</b></p>
-    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.4 − (0.32 / (1 + e<sup>−0.5 ⋅ (PEEP − 10)</sup>))</p>
     <p><b>For Normal:</b></p>
     <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
+    <p><b>For ARDS:</b></p>
+    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.4 − (0.32 / (1 + e<sup>−0.5 ⋅ (PEEP − 10)</sup>))</p>
     <p><b>For Asthma:</b></p>
     <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
 
