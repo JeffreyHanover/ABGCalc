@@ -1193,10 +1193,10 @@ PartO2 = PO2;
 PartCO2 = PCO2;
 SartO2 = SO2;
 
-        // Kassirer-Bleich approximation for pH
-        pHcap = -Math.log10((24 * PcapCO2 / 24) * 1e-9); // Assuming HCO3 = 24 mEq/L for simplicity
-        pHv = -Math.log10((24 * PvCO2 / 24) * 1e-9);
-        pHart = -Math.log10((24 * PartCO2 / 24) * 1e-9);
+   // Henderson-Hasselbalch equation for pH
+        pHcap = 6.1 + Math.log10(24 / (0.03 * PcapCO2)); // For capillary pCO2
+        pHv = 6.1 + Math.log10(24 / (0.03 * PvCO2));     // For venous pCO2
+        pHart = 6.1 + Math.log10(24 / (0.03 * PartCO2)); // For arterial pCO2 // Assuming bicarbonate = 24 mEq/L for simplicity
         A_aO2Diff = PAO2 - PartO2;
 
         Phys_VD_VT = (VdotE - VdotA) / VdotE;
