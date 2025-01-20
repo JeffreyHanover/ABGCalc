@@ -1193,9 +1193,10 @@ PartO2 = PO2;
 PartCO2 = PCO2;
 SartO2 = SO2;
 
-        pHcap = 7.6 - 0.005 * PcapCO2;
-        pHv = 7.59 - 0.005 * PvCO2;
-        pHart = 7.6 - 0.005 * PartCO2;
+        // Kassirer-Bleich approximation for pH
+        pHcap = -Math.log10((24 * PcapCO2 / 24) * 1e-9); // Assuming HCO3 = 24 mEq/L for simplicity
+        pHv = -Math.log10((24 * PvCO2 / 24) * 1e-9);
+        pHart = -Math.log10((24 * PartCO2 / 24) * 1e-9);
         A_aO2Diff = PAO2 - PartO2;
 
         Phys_VD_VT = (VdotE - VdotA) / VdotE;
