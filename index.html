@@ -449,7 +449,7 @@ if (disease == "ards") {
     }
 
     // Sigmoidal equation for QdotS/QdotT
-    QdotS_QdotT = 0.4 - (0.32 / (1 + Math.exp(-1.5 * (PEEP - 10)))); // Adjusted for smooth transition
+    QdotS_QdotT = 0.4 - (0.32 / (1 + Math.exp(-0.5 * (PEEP - 10)))); // Adjusted for smooth transition
 
     // Sigmoidal equation for VD remains unchanged
     VD = 150 + (100 / (1 + Math.exp(-1.5 * (PEEP - 15)))); // Adjusted for smooth transition
@@ -1745,7 +1745,7 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
 
 <p><b>Shunt Fraction (Q<sub>dotS</sub> / Q<sub>dotT</sub>)</b> is the proportion of cardiac output that bypasses the alveolar gas exchange process. Here it is assumed to vary based on disease, with a low constant shunt in normal or asthmatic lungs, and a much higher shunt fraction that is improved by PEEP in ARDS.</p>
     <p><b>For ARDS:</b></p>
-    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.4 − (0.32 / (1 + e<sup>−1.5 ⋅ (PEEP − 10)</sup>))</p>
+    <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.4 − (0.32 / (1 + e<sup>−0.5 ⋅ (PEEP − 10)</sup>))</p>
     <p><b>For Normal:</b></p>
     <p class="formula">Q<sub>dotS</sub> / Q<sub>dotT</sub> = 0.02</p>
     <p><b>For Asthma:</b></p>
