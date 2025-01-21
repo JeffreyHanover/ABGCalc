@@ -1431,7 +1431,7 @@ if (VdotA_A_VdotA == QdotC_A_QdotC){
 
   
 function Hemoglobin(PO2, PCO2, Hb){
-        var Cmax = 1.33333 * Hb;
+        var Cmax = 1.336 * Hb;
         var y = PO2 * (0.004273 + 0.041243 * Math.pow(PCO2, -0.5352));
         var U = 0.406 * y + 1.82 * y * y + 39.59 * y * y * y;
         SO2 = 100 * (1 / ((23400 / (Math.pow(PO2, 3) + 150 * PO2)) + 1));
