@@ -79,7 +79,7 @@ button {
 
 /* Hover effect for the button */
 button:hover {
-  background-color: #1D2951;     /* Button hover effect */
+  background-color: #ffffff;     /* Button hover effect */
 }
 
 /* Input styling */
@@ -366,32 +366,6 @@ padding: 2px;
   align-items: center;      /* Center vertically */
   height: 100vh;            /* Optional: Use full viewport height */
 }
-.custom-button {
-    align-items: center;
-    background-color:  #C2D0FF;
-    border: 1px solid  #C2D0FF;
-    border-radius: 2rem;
-    box-sizing: border-box;
-    color: #fff;
-    color: #1D2951;
-    display: inline-flex
-;
-    font-size: 0.9rem;
-    font-weight: 700;
-    height: 2.5rem;
-    justify-content: center;
-    letter-spacing: .04em;
-    max-width: 17rem;
-    min-width: 10rem;
-    outline-offset: .2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    text-decoration: none;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    transition: background .3s, border-color .3s, color .3s;
-    width: 100%;
-  }
 
 #phTextarea {
   color: black;
@@ -1457,14 +1431,10 @@ if (VdotA_A_VdotA == QdotC_A_QdotC){
 
   
 function Hemoglobin(PO2, PCO2, Hb){
-        var Cmax = 1.3333 * Hb;
+        var Cmax = 1.33333 * Hb;
         var y = PO2 * (0.004273 + 0.041243 * Math.pow(PCO2, -0.5352));
         var U = 0.406 * y + 1.82 * y * y + 39.59 * y * y * y;
         SO2 = 100 * U / (1.0 + U);
-        CO2 = 0.01 * Cmax * SO2 + 0.003 * PO2;
-        CCO2 = (14.9 - 0.014 * SO2) * Math.pow(PCO2, 0.35);
-    }
-
         CO2 = 0.01 * Cmax * SO2 + 0.003 * PO2;
         CCO2 = (14.9 - 0.014 * SO2) * Math.pow(PCO2, 0.35);
     }
@@ -1665,10 +1635,9 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
 </div>
 
 	<div class = "button1">
-	<button onclick='showOutputs()' class="custom-button"> 
-		<b>Draw Arterial Blood Gas</b>
-	</button>
+	<button onclick='showOutputs()' style="width:95%;background-color: #C2D0FF; color: #1D2951; font-size: 14px; padding: 6px; text-align:center; text-decoration: none;"><b>Draw Arterial Blood Gas</b></button>
 	</div>
+
 
 <div class="out">
   <div class="textbox8">
@@ -1705,7 +1674,7 @@ function Integrate(PO2Init, PCO2Init, Hb, DLO2, QdotC, n, PO2External, PCO2Exter
 </div>
 
 <div class="button2">
-  <button onclick='refreshPage()' class="custom-button">
+  <button onclick="refreshPage()" style="width:95%;background-color: #C2D0FF; color:#1D2951; font-size: 14px; padding: 6px; text-align: center; text-decoration: none;">
     <b>Reset</b>
   </button>
 </div>
