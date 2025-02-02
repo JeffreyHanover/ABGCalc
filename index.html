@@ -506,27 +506,47 @@ if (disease == "asthma") {
         alert("PEEP value is invalid. Please enter a valid number.");
         return;
     }
-
-    // Sigmoidal equation for VD in asthma
-    VD = 250 + (100 / (1 + Math.exp(-0.5 * (PEEP - 12)))); // Adjusted to target 350 mL at PEEP = 20
-
-    // Fixed value for QdotS/QdotT
+    
+    // Get the current respiratory rate from the input
+    var f = +document.getElementById("RR").value;
+    
+    // Calculate the baseline (PEEP-dependent term)
+    // This gives about 250 when PEEP is low (e.g., PEEP = 4 yields ~251.8)
+    var baseline = 250 + (100 / (1 + Math.exp(-0.5 * (PEEP - 12))));
+    
+    // Define a scaling factor k for the RR effect (try k = 1 for a steeper increase)
+    var k = 1;
+    
+    // Calculate the RR-dependent multiplier using the alternative function:
+    // multiplier = 1 + k * ((50 - 15) / (50 - RR) - 1)
+    // At RR = 15: (35/(35) - 1) = 0, so multiplier = 1.
+    // For RR > 15, the multiplier rises faster.
+    var multiplier = 1 + k * ((50 - 15) / (50 - f) - 1);
+    
+    // Combined dead space:
+    VD = baseline * multiplier;
+    
+    // Fixed shunt fraction for severe asthma:
     QdotS_QdotT = 0.02;
-
-    // Debugging logs
+    
+    // Debugging logs for checking the computed values:
     console.log("PEEP:", PEEP);
-    console.log("VD:", VD);
+    console.log("RR:", f);
+    console.log("Baseline (PEEP term):", baseline);
+    console.log("RR multiplier:", multiplier);
+    console.log("Combined VD:", VD);
     console.log("QdotS/QdotT:", QdotS_QdotT);
-
+    
     // Ensure values are within valid ranges
     if (VD <= 0 || QdotS_QdotT < 0 || QdotS_QdotT > 1) {
         alert("Calculated VD or QdotS/QdotT is out of range. Check equations.");
         return;
     }
-
-    // Asthma uses MISMATCH logic
+    
+    // Activate V/Q mismatch logic for severe asthma
     MISMATCH = 1;
 }
+
 
 
 QdotC = QdotT * (1.0 - QdotS_QdotT);
